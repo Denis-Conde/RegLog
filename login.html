@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario de Inicio de Sesión</title>
+  <style>
+    body { font-family: Arial, sans-serif; }
+    .form-container { max-width: 500px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 5px; }
+    .error { color: red; }
+    .blocked { color: red; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <div class="form-container">
+    <h2>Iniciar Sesión</h2>
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="correoLogin">Correo Electrónico:</label>
+        <input type="email" id="correoLogin" readonly required>
+      </div>
+
+      <div class="form-group">
+        <label for="passwordLogin">Contraseña:</label>
+        <input type="password" id="passwordLogin" required>
+        <small class="error" id="loginError"></small>
+      </div>
+
+      <button type="submit">Iniciar Sesión</button>
+    </form>
+
+    <div id="blockMessage" class="blocked" style="display:none;">
+      Has sido bloqueado después de 3 intentos fallidos.
+    </div>
+  </div>
+
+  <script>
+    const usuarioRegistradoCorreo = localStorage.getItem("correoRegistrado");
+    const usuarioRegistradoPassword = localStorage.getItem("passwordRegistrada");
+
+    let attempts = 0;
+
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const correoLogin = document.getElementById("correoLogin").value;
+      const passwordLogin = document.getElementById("passwordLogin").value;
+      const loginError = document.getElementById("loginError");
+      const blockMessage = document.getElementById("blockMessage");
+
+     
+      if (attempts >= 3) {
+        blockMessage.style.display = "block";
+        document.getElementById("loginForm").querySelector("button").disabled = true; // Deshabilitar el btn
+        return;
+      }
+
+      // Verificar las credenciales
+      if (correoLogin === usuarioRegistradoCorreo && passwordLogin === usuarioRegistradoPassword) {
+     
+        window.location.href = "https://denis-conde.github.io/web/"; // Redirigir
+      } else {
+        attempts++;
+        loginError.textContent = "Correo o contraseña incorrectos.";
+        if (attempts >= 3) {
+          blockMessage.style.display = "block";
+          document.getElementById("loginForm").querySelector("button").disabled = true;
+        }
+      }
+    });
+
+ 
+    document.getElementById("correoLogin").value = usuarioRegistradoCorreo;
+  </script>
+
+</body>
+</html>
